@@ -1,6 +1,6 @@
 {
   "name": "@red-cup-engineering/yaml-frontmatter-codec-service",
-  "version": "0.1.6",
+  "version": "0.1.8",
   "private": false,
   "type": "module",
   "description": "Full YAML mapping codec and byte-preserving top-level mapping mutation.",
@@ -16,7 +16,7 @@
     "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
-    "yaml": "2.9.1",
+    "yaml": "2.9.0",
     "@red-cup-engineering/json-services-section": "0.4.0"
   }
 }
