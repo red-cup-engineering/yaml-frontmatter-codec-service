@@ -1,6 +1,6 @@
 {
   "name": "@red-cup-engineering/yaml-frontmatter-codec-service",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "private": false,
   "type": "module",
   "description": "Full YAML mapping codec and byte-preserving top-level mapping mutation.",
