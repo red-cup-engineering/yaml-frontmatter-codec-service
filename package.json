@@ -6,8 +6,7 @@
   "description": "Full YAML mapping codec and byte-preserving top-level mapping mutation.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/red-cup-engineering/computer-serialized-content-engineering-services-section.git",
-    "directory": "services/yaml-services-section/services/yaml-frontmatter-codec-service"
+    "url": "git+https://github.com/red-cup-engineering/yaml-frontmatter-codec-service.git"
   },
   "exports": {
     ".": "./src/index.mjs",
