@@ -40,3 +40,42 @@ test("source edits preserve anchors and following entries, and refuse broken ali
   assert.equal(Object.hasOwn(projectFlatScalarStringLists(owned),"__proto__"), true);
   assert.equal(Object.hasOwn(decodeYamlWithSourceLocations("__proto__: safe\n").keyLocations,"__proto__"),true);
 });
+
+test("bibliography list edits admit records and nested JSON without changing neighboring source", () => {
+  const before = "# receiving note\r\ntitle: 'Exact title' # keep\r\n";
+  const after = "status: research # unchanged\r\n";
+  const references = [{id:"a",title:"A",authors:[{family:"One"}],metadata:{year:2026}}, {id:"c",title:"C: revised"}];
+  const source = before + "references:\r\n  - id: a\r\n    title: A\r\n  - id: b\r\n    title: B\r\n" + after;
+  const result = mutateYamlTopLevelMapping(source, {mode:"set",key:"references",value:references});
+  assert.deepEqual(decodeYaml(result), {title:"Exact title",references,status:"research"});
+  assert(result.startsWith(before));
+  assert(result.endsWith(after));
+  assert.equal(result.replaceAll("\r\n", "").includes("\n"), false);
+  assert.equal(mutateYamlTopLevelMapping(result, {mode:"set",key:"references",value:references}), result);
+});
+
+test("changed flow and block lists accept mixed nested values and retain scalar spelling", () => {
+  const values = ["kept", {id:"new",parts:[1,[false,null],{"quoted:key":"true"}]}, ["nested",{id:"other"}]];
+  for (const list of ["[ 'kept', old ]", "\n  - 'kept'\n  - old"]) {
+    const source = "items: " + list + " # list comment\nnext: |\n  literal bytes\n";
+    const result = mutateYamlTopLevelMapping(source, {mode:"set",key:"items",value:values});
+    assert.deepEqual(decodeYaml(result), {items:values,next:"literal bytes\n"});
+    assert(result.includes("'kept'"));
+    assert(result.endsWith("\nnext: |\n  literal bytes\n"));
+    if (list.startsWith("[")) assert(result.includes(" # list comment\n"));
+    assert.equal(result.startsWith("items: ["), list.startsWith("["));
+  }
+});
+
+test("bibliographic punctuation remains string data in nested flow collections", () => {
+  const titles = ["A, B", "an [aside] here", "an {aside} here", "a:b", "a: b", "line\nbreak"];
+  const values = titles.map(title => ({title, "a,b": [title]}));
+  for (const source of ["references: []\nnext: exact\n", "references:\n  - old\nnext: exact\n"]) {
+    const result = mutateYamlTopLevelMapping(source, {mode:"set",key:"references",value:values});
+    assert.deepEqual(decodeYaml(result), {references:values,next:"exact"});
+    assert(result.endsWith("\nnext: exact\n"));
+  }
+  const source = "items:\n  - A, B\nnext: exact\n";
+  const result = mutateYamlTopLevelMapping(source, {mode:"set",key:"items",value:["A, B", "new"],flow:true});
+  assert.deepEqual(decodeYaml(result), {items:["A, B", "new"],next:"exact"});
+});
