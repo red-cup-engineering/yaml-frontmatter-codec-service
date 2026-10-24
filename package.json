@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "yaml": "2.9.0",
-    "@red-cup-engineering/json-services-section": "0.4.0"
+    "@red-cup-engineering/json-engineering-services-section": "0.4.0"
   },
   "license": "MIT",
   "funding": {
