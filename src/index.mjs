@@ -270,7 +270,10 @@ function renderChangedPair(text, mutation) {
     if (isSeq(previous) && Array.isArray(value)) {
         const keyIndent = columnAt(text, pair.key.range[0]);
         const rendered = renderChangedArray(text, previous, value, keyIndent, mutation.flow);
-        return `${text.slice(pair.key.range[0], previous.range[0])}${rendered}${text.slice(previous.range[1], pairEnd)}`;
+        // Block collections own their final line break in range[1]. Keep that
+        // separator so the next top-level key cannot attach to the last item.
+        const separator = !previous.flow && text[previous.range[1] - 1] === "\n" ? "\n" : "";
+        return `${text.slice(pair.key.range[0], previous.range[0])}${rendered}${separator}${text.slice(previous.range[1], pairEnd)}`;
     }
     // A type change (scalar <-> collection) or a record value: re-render the
     // whole entry with the default projection rather than guess a splice.
@@ -295,7 +298,7 @@ function renderScalarReuse(previous, value) {
         return value;
     return null;
 }
-/** Render a changed array value, reusing retained items' exact source text and the previous flow/block style. */
+/** Render a changed array value, reusing retained scalar text and the previous flow/block style. */
 function renderChangedArray(text, previous, values, keyIndent, flowOverride) {
     if (values.length === 0)
         return "[]";
@@ -303,7 +306,8 @@ function renderChangedArray(text, previous, values, keyIndent, flowOverride) {
     const previousItems = isSeq(previous) ? previous.items : [];
     const rawFor = (value) => {
         const retained = previousItems.find((old) => isScalar(old) && isDeepStrictEqual(old.value, value));
-        return retained ? text.slice(retained.range[0], retained.range[1]) : encodeScalar(value);
+        const raw = retained ? text.slice(retained.range[0], retained.range[1]) : null;
+        return raw !== null && (!useFlow || isFlowScalarSource(raw, value)) ? raw : encodeFlowScalarOrNested(value);
     };
     if (useFlow)
         return `[ ${values.map(rawFor).join(", ")} ]`;
@@ -331,7 +335,16 @@ function encodeFlowScalarOrNested(value) {
     }
     if (isObjectRecord(value))
         return encodeFlowMapping(value);
-    return encodeScalar(value);
+    const scalar = encodeScalar(value);
+    return typeof value === "string" && !isFlowScalarSource(scalar, value) ? quoteString(value) : scalar;
+}
+// A block plain scalar may contain commas or brackets that have grammatical
+// meaning inside a flow collection. Let the same native parser check context.
+function isFlowScalarSource(source, value) {
+    const document = parseYamlDocument(`[ ${source} ]`);
+    return document.errors.length === 0 && document.warnings.length === 0
+        && isSeq(document.contents) && document.contents.items.length === 1
+        && isScalar(document.contents.items[0]) && isDeepStrictEqual(document.contents.items[0].value, value);
 }
 function encodeFlowMapping(record) {
     const entries = Object.entries(record).filter(([, value]) => value !== undefined);
