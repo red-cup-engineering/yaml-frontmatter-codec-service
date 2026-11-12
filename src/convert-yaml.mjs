@@ -1,4 +1,5 @@
 /** Bounded native YAML diagnostics and YAML/JSON conversion, without I/O. */
+import { encodeUtf8Source } from "@red-cup-engineering/signcell/source-codec";
 import { Document, isAlias, isCollection, visit } from "yaml";
 import { canonicalizeJson, JSON_RESOURCE_ENVELOPE } from "@red-cup-engineering/json-services-section/canonical-json";
 import { parseYamlDocument, jsonFromYamlDocument } from "./document.mjs";
@@ -12,7 +13,7 @@ function request(body, key) {
 function textFrom(body) {
   const text = request(body, "text");
   if (typeof text !== "string" || !text.isWellFormed()) throw new TypeError("text must be well-formed Unicode YAML text");
-  if (new TextEncoder().encode(text).byteLength > LIMIT) throw new RangeError(`YAML text exceeds ${LIMIT} bytes`);
+  if (encodeUtf8Source(text).byteLength > LIMIT) throw new RangeError(`YAML text exceeds ${LIMIT} bytes`);
   return text;
 }
 function boundedDocument(text, stringKeys) {
@@ -31,7 +32,7 @@ export function yamlToJson(body) {
 export function jsonToYaml(body) {
   const value = canonicalizeJson(request(body, "value"), envelope).value;
   const text = new Document(value, { version: "1.2" }).toString({ lineWidth: 0 });
-  if (new TextEncoder().encode(text).byteLength > LIMIT) throw new RangeError(`YAML output exceeds ${LIMIT} bytes`);
+  if (encodeUtf8Source(text).byteLength > LIMIT) throw new RangeError(`YAML output exceeds ${LIMIT} bytes`);
   return { text };
 }
 export function validateYamlDocument(body) {

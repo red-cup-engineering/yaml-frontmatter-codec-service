@@ -79,3 +79,14 @@ test("bibliographic punctuation remains string data in nested flow collections",
   const result = mutateYamlTopLevelMapping(source, {mode:"set",key:"items",value:["A, B", "new"],flow:true});
   assert.deepEqual(decodeYaml(result), {items:["A, B", "new"],next:"exact"});
 });
+
+test("frontmatter codec witnesses the original bytes and preserves distinct mapping keys", async () => {
+  const { yamlFrontmatterSourceCodec } = await import("@red-cup-engineering/yaml-frontmatter-codec-service/source-codec");
+  const { verifyContentAddress } = await import("@red-cup-engineering/signcell/content-address/raw");
+  const bytes = Buffer.from("\uFEFFé: composed\r\ne\u0301: decomposed\r\n");
+  const reading = yamlFrontmatterSourceCodec.read(bytes);
+  assert.deepEqual(reading.value, { "é": "composed", "e\u0301": "decomposed" });
+  assert.equal(verifyContentAddress(bytes, reading.source), true);
+  assert.deepEqual(yamlFrontmatterSourceCodec.write(reading.value).reading.value, reading.value);
+  assert.throws(() => yamlFrontmatterSourceCodec.read(Buffer.from("a: 1\na: 2\n")), /unique/i);
+});

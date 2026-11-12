@@ -1,6 +1,6 @@
 {
   "name": "@red-cup-engineering/yaml-frontmatter-codec-service",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "private": false,
   "type": "module",
   "description": "Full YAML mapping codec and byte-preserving top-level mapping mutation.",
@@ -10,7 +10,8 @@
   },
   "exports": {
     ".": "./src/index.mjs",
-    "./convert-yaml": "./src/convert-yaml.mjs"
+    "./convert-yaml": "./src/convert-yaml.mjs",
+    "./source-codec": "./src/source-codec.mjs"
   },
   "files": [
     "src"
@@ -21,7 +22,8 @@
   },
   "dependencies": {
     "yaml": "^2.9.0",
-    "@red-cup-engineering/json-services-section": "^0.4.0"
+    "@red-cup-engineering/json-services-section": "^0.4.0",
+    "@red-cup-engineering/signcell": "^0.17.5"
   },
   "license": "MIT",
   "funding": {
