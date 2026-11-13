@@ -1,7 +1,7 @@
 /** Bounded native YAML diagnostics and YAML/JSON conversion, without I/O. */
 import { encodeUtf8Source } from "@red-cup-engineering/signcell/source-codec";
 import { Document, isAlias, isCollection, visit } from "yaml";
-import { canonicalizeJson, JSON_RESOURCE_ENVELOPE } from "@red-cup-engineering/json-services-section/canonical-json";
+import { canonicalizeJson, JSON_RESOURCE_ENVELOPE } from "@red-cup-engineering/json-engineering-services-section/canonical-json";
 import { parseYamlDocument, jsonFromYamlDocument } from "./document.mjs";
 
 const LIMIT = 65536;

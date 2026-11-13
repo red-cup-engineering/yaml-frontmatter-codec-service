@@ -1,5 +1,5 @@
 /** YAML mapping projection and source-preserving edits. Markdown owns its fences. */
-import { isObjectRecord, requireJsonValue } from "@red-cup-engineering/json-services-section";
+import { isObjectRecord, requireJsonValue } from "@red-cup-engineering/json-engineering-services-section";
 import { isMap, isScalar, isSeq, visit } from "yaml";
 import { parseYamlDocument, jsonFromYamlDocument, requireYamlSyntax } from "./document.mjs";
 import { isDeepStrictEqual } from "node:util";
