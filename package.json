@@ -1,6 +1,6 @@
 {
   "name": "@red-cup-engineering/yaml-frontmatter-codec-service",
-  "version": "0.1.10",
+  "version": "0.1.11-dev.0",
   "private": false,
   "type": "module",
   "description": "Full YAML mapping codec and byte-preserving top-level mapping mutation.",
@@ -14,7 +14,8 @@
     "./source-codec": "./src/source-codec.mjs"
   },
   "files": [
-    "src"
+    "src",
+    "test"
   ],
   "scripts": {
     "check": "node --check src/index.mjs && node --check src/document.mjs && node --check src/convert-yaml.mjs",
@@ -22,12 +23,16 @@
   },
   "dependencies": {
     "yaml": "^2.9.0",
-    "@red-cup-engineering/json-engineering-services-section": "^0.4.0",
-    "@red-cup-engineering/signcell": "^0.17.5"
+    "@red-cup-engineering/json-engineering-services-section": "0.4.3-dev.0",
+    "@red-cup-engineering/signcell": "0.17.5"
   },
   "license": "MIT",
   "funding": {
     "type": "individual",
     "url": "https://github.com/561-group/.github/blob/main/TIPS.md"
-  }
+  },
+  "receivingTests": [
+    "test/yaml-file-codec.test.mjs",
+    "test/yaml-transformations.test.mjs"
+  ]
 }

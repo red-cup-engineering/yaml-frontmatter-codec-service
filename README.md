@@ -28,3 +28,11 @@ Paid operations admit 65536 UTF-8 bytes, depth 64, 8192 syntax/projection nodes
 and at most 100 aliases. JSON conversion also limits arrays to 4096 items and
 refuses excessive alias expansion. Resource refusals are not syntax verdicts.
 No upstream compute, model or filesystem access is needed.
+
+## Native prerequisite receiving
+
+Original behavior and public consumer tests are shipped and declared as receiving tests.
+The native dependency lock uses genuine archive identities, not workspace links.
+This development cohort is a prerequisite preview: local authentic-archive
+qualification is not registry issuance or live activation, and does not clear
+held supplier integration or issuance gates.
