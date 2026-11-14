@@ -10,7 +10,7 @@ import {
   projectFlatScalarStringLists,
   quoteYamlScalar,
   repairYamlPlainScalars,
-} from "../src/index.mjs";
+} from "@red-cup-engineering/yaml-frontmatter-codec-service";
 
 test("YAML frontmatter subset round-trips nested JSON records", () => {
   const record = {

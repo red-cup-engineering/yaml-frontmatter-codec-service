@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { yamlToJson, jsonToYaml, validateYamlDocument } from "../src/convert-yaml.mjs";
-import { decodeYaml, deleteYamlNestedKey, mutateYamlTopLevelMapping, projectFlatScalarStringLists, decodeYamlWithSourceLocations } from "../src/index.mjs";
+import { yamlToJson, jsonToYaml, validateYamlDocument } from "@red-cup-engineering/yaml-frontmatter-codec-service/convert-yaml";
+import { decodeYaml, deleteYamlNestedKey, mutateYamlTopLevelMapping, projectFlatScalarStringLists, decodeYamlWithSourceLocations } from "@red-cup-engineering/yaml-frontmatter-codec-service";
 
 test("native aliases, JSON roots and types survive conversion without synthetic evidence", () => {
   assert.deepEqual(yamlToJson({text: "a: &defaults {active: true}\nb: *defaults\n"}).value, {a:{active:true},b:{active:true}});
